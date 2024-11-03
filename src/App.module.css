@@ -1,0 +1,66 @@
+.container {
+  padding: 12px;
+}
+
+.header {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 24px;
+}
+
+.header :global(input) {
+  width: 82px;
+}
+
+.result {
+ display: flex;
+  gap: 54px;
+}
+
+.probabilities {
+  display: flex;
+  gap: 12px;
+  text-align: center;
+}
+
+.fails {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fail {
+  display: inline-block;
+  border: 2px solid gray;
+  border-radius: 999px;
+  padding: 8px;
+  margin: 0 0 1rem;
+}
+
+.rateValue {
+  font-weight: bold;
+}
+
+.rate {
+  display: inline-block;
+  border: 2px solid;
+  border-radius: 999px;
+  padding: 8px;
+  margin: 0.2rem 1rem;
+}
+
+.rate.success {
+  border-color: #0fb781;
+}
+
+.rate.failure {
+  border-color: #d71111;
+}
+
+
+.rolls {
+  border-left: 1px solid #CCC;
+  padding-left: 24px;
+  max-width: 300px;
+}
