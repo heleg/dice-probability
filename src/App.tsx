@@ -6,6 +6,10 @@ import Die from "./Die.tsx";
 import clsx from "clsx";
 
 const ROLLS = 1000000;
+const MAX_DICE = 20;
+
+const clamp = (num: number, min: number, max: number) =>
+  Math.round(Math.min(Math.max(num, min), max));
 
 const countSuccessIndex = ({ length, i }: { length: number; i: number }) =>
   Math.floor(length / 2) - length + i + 1;
@@ -18,15 +22,24 @@ const App = () => {
   const [precision, setPrecision] = useState(0);
 
   const roll = () => {
+    const realDiceAmount = clamp(Number(diceAmount), 1, MAX_DICE);
+    const realDifficulty = clamp(Number(difficulty), 3, 10);
+    const realPrecision = clamp(Number(precision), 0, 4);
+
+    setPrecision(realPrecision);
+    setDifficulty(realDifficulty);
+    setDiceAmount(realDiceAmount);
+
     const result = rollDice({
-      diceAmount,
-      difficulty: 6,
+      diceAmount: realDiceAmount,
+      difficulty: realDifficulty,
     });
     setResult(result);
+
     const { percentage } = runSimulation({
-      diceAmount,
-      difficulty,
-      precision,
+      diceAmount: realDiceAmount,
+      difficulty: realDifficulty,
+      precision: realPrecision,
       rolls: ROLLS,
     });
 
@@ -44,14 +57,17 @@ const App = () => {
       <header className={s.header}>
         <h1 className="heading-1">Dice probability</h1>
         <label>
-          <span className="label-text">Dice amount</span>
+          <span className="label-text">Dice amount (max: {MAX_DICE}) </span>
           <input
             type="number"
             min={1}
-            max={20}
+            max={MAX_DICE}
             step={1}
             value={diceAmount}
-            onChange={(e) => setDiceAmount(Number(e.target.value))}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              return setDiceAmount(value);
+            }}
           />
         </label>
         <label>
@@ -62,7 +78,10 @@ const App = () => {
             max={10}
             step={1}
             value={difficulty}
-            onChange={(e) => setDifficulty(Number(e.target.value))}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              return setDifficulty(value);
+            }}
           />
         </label>
 
@@ -74,7 +93,10 @@ const App = () => {
             max={4}
             step={1}
             value={precision}
-            onChange={(e) => setPrecision(Number(e.target.value))}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              return setPrecision(value);
+            }}
           />
         </label>
 
@@ -92,16 +114,20 @@ const App = () => {
             <div className={clsx(s.stat, s.botch)}>
               {percentage
                 ?.slice(0, Math.floor(length / 2))
-                .reduce((acc, value) => acc + Number(value), 0)}
+                .reduce((acc, value) => acc + Number(value), 0)
+                .toFixed(precision)}
               %
             </div>
             <div className={clsx(s.stat, s.failure)}>
-              {percentage?.[Math.floor(length / 2)]}%
+              {percentage &&
+                Number(percentage[Math.floor(length / 2)]).toFixed(precision)}
+              %
             </div>
             <div className={clsx(s.stat, s.success)}>
               {percentage
                 ?.slice(Math.floor(length / 2) + 1)
-                .reduce((acc, value) => acc + Number(value), 0)}
+                .reduce((acc, value) => acc + Number(value), 0)
+                .toFixed(precision)}
               %
             </div>
           </div>
@@ -110,8 +136,12 @@ const App = () => {
               <div>
                 {percentage
                   ?.slice(0, Math.floor(length / 2))
+                  .reverse()
                   .map((value, i) => {
-                    const rate = countSuccessIndex({ length, i });
+                    const rate = countSuccessIndex({
+                      length,
+                      i: Math.floor(length / 2) - i - 1,
+                    });
                     return (
                       <div key={i}>
                         <span className={clsx(s.rate, s.failure)}>{rate} </span>
