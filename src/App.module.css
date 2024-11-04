@@ -7,6 +7,8 @@
   justify-content: left;
   align-items: center;
   gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
 .header :global(input) {
@@ -14,28 +16,42 @@
 }
 
 .result {
- display: flex;
+  display: flex;
   gap: 54px;
+  flex-wrap: wrap;
 }
 
 .probabilities {
   display: flex;
   gap: 12px;
   text-align: center;
+  flex-wrap: wrap;
 }
 
-.fails {
+.stats {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.fail {
+.stat {
   display: inline-block;
   border: 2px solid gray;
   border-radius: 999px;
   padding: 8px;
   margin: 0 0 1rem;
+}
+
+.stat.success {
+  border-color: #0fb781;
+}
+
+.stat.failure {
+  border-color: #858585;
+}
+
+.stat.botch {
+  border-color: #d71111;
 }
 
 .rateValue {
@@ -58,9 +74,8 @@
   border-color: #d71111;
 }
 
-
 .rolls {
-  border-left: 1px solid #CCC;
+  border-left: 1px solid #ccc;
   padding-left: 24px;
   max-width: 300px;
 }

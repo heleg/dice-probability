@@ -5,7 +5,9 @@ import { runSimulation } from "./simulation.ts";
 import Die from "./Die.tsx";
 import clsx from "clsx";
 
-const countSuccessIndex = ({ length, i }) =>
+const ROLLS = 1000000;
+
+const countSuccessIndex = ({ length, i }: { length: number; i: number }) =>
   Math.floor(length / 2) - length + i + 1;
 
 const App = () => {
@@ -25,7 +27,7 @@ const App = () => {
       diceAmount,
       difficulty,
       precision,
-      rolls: 1000000,
+      rolls: ROLLS,
     });
 
     setPercentage(percentage);
@@ -80,16 +82,27 @@ const App = () => {
           className="primary-button"
           onClick={roll}
         >
-          Roll Dice
+          Roll Dice ({ROLLS} times)
         </button>
       </header>
 
       <div className={s.result}>
         <div>
-          <div className={s.fails}>
-            <h3 className="heading-3">Fails:</h3>
-            <div className={s.fail}>
+          <div className={s.stats}>
+            <div className={clsx(s.stat, s.botch)}>
+              {percentage
+                ?.slice(0, Math.floor(length / 2))
+                .reduce((acc, value) => acc + Number(value), 0)}
+              %
+            </div>
+            <div className={clsx(s.stat, s.failure)}>
               {percentage?.[Math.floor(length / 2)]}%
+            </div>
+            <div className={clsx(s.stat, s.success)}>
+              {percentage
+                ?.slice(Math.floor(length / 2) + 1)
+                .reduce((acc, value) => acc + Number(value), 0)}
+              %
             </div>
           </div>
           <div className={s.probabilities}>
